@@ -18,6 +18,7 @@ public class Main {
 
             frame.add(sceneManager);
             frame.pack();
+            frame.setLocationRelativeTo(null);
 
             frame.setVisible(true);
         });

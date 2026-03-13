@@ -6,8 +6,15 @@ public class PatternChallengeGUI extends ShootMenu {
     private PatternChallengeDice engine;
 
     public PatternChallengeGUI(SceneManager manager) {
-        super(manager, List.of("REROLL", "BANK_SCORE", "EXIT"));
-        this.engine = new PatternChallengeDice(manager);
+        super(manager, List.of()); // Clear default vertical list
+
+        // --- HORIZONTAL ACTION BAR ---
+        String[] keys = {"REROLL", "BANK_SCORE", "EXIT"};
+        int startX = 280; // Start centering the row
+        for (String key : keys) {
+            int width = 130;
+            targets.add(new Target(startX, 530, width, 40, key));
+            startX += width + 15;}
     }
 
     @Override

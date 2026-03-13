@@ -7,8 +7,16 @@ public class DiceGridGUI extends ShootMenu {
     private int finalScore = 0;
 
     public DiceGridGUI(SceneManager manager) {
-        super(manager, List.of("RESET", "EXIT"));
+        super(manager, List.of());
         this.engine = new DiceGridEngine(manager.getPlayer());
+
+        String[] keys = {"RESET", "EXIT"};
+        int startX = 350;
+        for (String key : keys) {
+            int width = 100;
+            targets.add(new Target(startX, 530, width, 40, key));
+            startX += width + 20;
+        }
     }
 
     @Override

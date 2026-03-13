@@ -29,11 +29,18 @@ public abstract class ShootMenu extends JPanel {
     public ShootMenu(SceneManager manager, List<String> options) {
         this.sceneManager = manager;
 
+
         // Add targets dynamically based on options
-        int y = 60;
+        int y = 150;
         for (String opt : options) {
-            targets.add(new Target(120, y, 160, 40, opt));
-            y += 70;
+            // Calculate width: at least 200px, or 15px per letter
+            int dynamicWidth = Math.max(200, opt.length() * 15);
+
+            // Center the BOX on the screen (900px wide)
+            int centerX = (900 - dynamicWidth) / 2;
+
+            targets.add(new Target(centerX, y, dynamicWidth, 45, opt));
+            y += 65;
         }
 
 
@@ -50,10 +57,7 @@ public abstract class ShootMenu extends JPanel {
         camX += (targetCamX - camX) * 0.1f;
         camY += (targetCamY - camY) * 0.1f;
 
-        // 2. IMPORTANT: Adjust mouse coordinates to "World Space"
-        // This ensures shooting and hovering works even when the camera shifts.
-        int worldMouseX = (int) (crossHair.x - camX);
-        int worldMouseY = (int) (crossHair.y - camY);
+
 
         // Update bullets
         Iterator<Bullet> it = bullets.iterator();
@@ -100,34 +104,48 @@ public abstract class ShootMenu extends JPanel {
 
     // Called by SceneManager to draw the menu
     protected void paintComponent(Graphics g) {
-
+        super.paintComponent(g); // Draws the base background
         Graphics2D g2 = (Graphics2D) g;
 
+        // 1. Save the original state (Static Screen Space)
         var oldTransform = g2.getTransform();
 
-        // --- Start World Space ---
+        // 2. APPLY THE SWAY (World Space)
+        // Everything drawn between here and 'setTransform' will move with the camera
         g2.translate(camX, camY);
 
-        g2.setColor(Color.DARK_GRAY);
-        g2.fillRect(0, 0, 900, 600);
+        // 3. Set your Font
+        g2.setFont(new Font("Monospaced", Font.BOLD, 18));
+        FontMetrics fm = g2.getFontMetrics();
 
-        g2.setFont(new Font("Arial", Font.BOLD, 18));
         for (Target t : targets) {
             Rectangle box = t.getDrawBox();
-            g2.setColor(t.hovered ? Color.ORANGE : Color.WHITE);
+
+            // DRAW THE BOX
+            g2.setColor(t.hovered ? Color.CYAN : Color.WHITE);
+            g2.setStroke(new BasicStroke(2));
             g2.drawRect(box.x, box.y, box.width, box.height);
-            g2.drawString(t.label, box.x + 50, box.y + 25);
+
+            // DRAW THE TEXT (Centered inside the moving box)
+            String label = t.label;
+            int textWidth = fm.stringWidth(label);
+
+            // Math: Box start + half of the remaining space
+            int tx = box.x + (box.width - textWidth) / 2;
+            int ty = box.y + (box.height + fm.getAscent()) / 2 - 4;
+
+            g2.drawString(label, tx, ty);
         }
 
-        g2.setColor(Color.YELLOW); // Bullets should pop!
+        // Draw the bullets here too so they sway
+        g2.setColor(Color.YELLOW);
         for (Bullet b : bullets) g2.fillRect(b.x, b.y, 4, 4);
 
-        // --- End World Space ---
+        // 4. RESTORE THE STATE (Back to Static Screen Space)
         g2.setTransform(oldTransform);
 
-        // Draw crosshair in SCREEN space so it stays exactly under the mouse
+        // 5. DRAW CROSSHAIR (Should NOT sway, stays locked to mouse)
         crossHair.draw(g2);
-
     }
 
     // ===== Inner Classes =====

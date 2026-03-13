@@ -1,9 +1,9 @@
 {
     "scores": {
-        "Game1_Total": 260,
+        "Game1_Total": 320,
         "Codebreaker_TotalPoints": 350,
         "DiceGrid_HighScore": 60,
-        "SystemCrash_Losses": 5
+        "SystemCrash_Losses": 10
     },
     "name": "Cyber_Runner"
 }
