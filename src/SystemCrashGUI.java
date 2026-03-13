@@ -15,11 +15,19 @@ public class SystemCrashGUI extends ShootMenu {
     public SystemCrashGUI(SceneManager manager) {
 
         super(manager, java.util.Arrays.asList());
-        engine = new SystemCrashDice(manager);
+        this.isHorizontal = true; // Use the horizontal level style
+        this.engine = new SystemCrashDice(manager);
 
-        // Buttons positioned in the "World Space"
-        targets.add(new Target(300, 470, 140, 60, "Bid"));
-        targets.add(new Target(500, 470, 140, 60, "Liar"));
+        // --- CENTERED HORIZONTAL BUTTONS ---
+        String[] keys = {"Bid", "Liar", "EXIT"};
+        int totalWidth = (keys.length * 140) + ((keys.length - 1) * 20);
+        int startX = (900 - totalWidth) / 2;
+
+        for (String key : keys) {
+            targets.add(new Target(startX, 470, 140, 60, key));
+            startX += 140 + 20;
+        }
+
     }
 
     @Override
@@ -48,12 +56,13 @@ public class SystemCrashGUI extends ShootMenu {
         switch (label) {
             case "Bid" -> openBidDialog();
             case "Liar" -> engine.playerCallLiar();
+            case "EXIT" -> sceneManager.switchScene(new GameMenu(sceneManager));
         }
     }
 
     private void openBidDialog() {
-        int face = -1;
-        int qty = -1;
+        int face;
+        int qty ;
 
         // 1. GET FACE VALUE (Loop until valid)
         while (true) {

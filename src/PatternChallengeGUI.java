@@ -6,38 +6,47 @@ public class PatternChallengeGUI extends ShootMenu {
     private PatternChallengeDice engine;
 
     public PatternChallengeGUI(SceneManager manager) {
-        super(manager, List.of()); // Clear default vertical list
+        // Initialize parent with empty list for manual horizontal placement
+        super(manager, List.of());
+        this.isHorizontal = true;
 
-        // --- HORIZONTAL ACTION BAR ---
+        // 1. Initialize the Engine
+        this.engine = new PatternChallengeDice(manager);
+
+        // 2. Setup Horizontal Buttons at the bottom
         String[] keys = {"REROLL", "BANK_SCORE", "EXIT"};
-        int startX = 280; // Start centering the row
+        int totalWidth = (keys.length * 150) + ((keys.length - 1) * 20);
+        int startX = (900 - totalWidth) / 2;
+
         for (String key : keys) {
-            int width = 130;
-            targets.add(new Target(startX, 530, width, 40, key));
-            startX += width + 15;}
+            targets.add(new Target(startX, 530, 150, 45, key));
+            startX += 150 + 20;
+        }
     }
 
     @Override
     public void updateLogic() {
-        super.updateLogic(); // Handles camera, bullet movement, and menu targets
+        super.updateLogic();
 
         // Detect if a bullet hits a die
         Iterator<Bullet> it = bullets.iterator();
         while (it.hasNext()) {
             Bullet b = it.next();
 
-            // Convert bullet screen position to world position (to match dice)
-            int worldX = (int) (b.x - camX);
-            int worldY = (int) (b.y - camY);
+            // World position of bullet (already adjusted in your ShootMenu Bullet class)
+            int bx = b.x;
+            int by = b.y;
 
+            // Hitbox Math: Must match paintComponent exactly
+            int diceStartX = (900 - (5 * 110)) / 2;
             for (int i = 0; i < 5; i++) {
-                int dx = 100 + (i * 125);
-                int dy = 250;
+                int dx = diceStartX + (i * 110);
+                int dy = 230;
 
-                // If bullet hitbox hits the die box
-                if (worldX >= dx && worldX <= dx + 100 && worldY >= dy && worldY <= dy + 100) {
+                // Check if bullet is inside the 100x100 die box
+                if (bx >= dx && bx <= dx + 100 && by >= dy && by <= dy + 100) {
                     engine.toggleKeep(i);
-                    it.remove(); // Destroy bullet on hit
+                    it.remove(); // Kill bullet
                     break;
                 }
             }
@@ -48,51 +57,78 @@ public class PatternChallengeGUI extends ShootMenu {
     protected void handleSelection(String label) {
         switch (label) {
             case "REROLL" -> engine.reroll();
-            case "BANK_SCORE" -> engine.bankScore();
+            case "BANK_SCORE" -> {
+                engine.bankScore();
+                // Optionally go back to menu after banking, or just stay to play more
+                sceneManager.switchScene(new GameMenu(sceneManager));
+            }
             case "EXIT" -> sceneManager.switchScene(new GameMenu(sceneManager));
         }
     }
 
     @Override
     protected void paintComponent(Graphics g) {
-        super.paintComponent(g); // Parent handles background, camera, and targets
+        super.paintComponent(g); // Draws background and horizontal buttons
         Graphics2D g2 = (Graphics2D) g;
 
-        // Apply camera translate for the dice
-        var oldTransform = g2.getTransform();
+        var old = g2.getTransform();
         g2.translate(camX, camY);
 
+        // --- DRAW DICE ---
         int[] dice = engine.getDice();
-        boolean[] keep = engine.getKeep();
+        boolean[] keeps = engine.getKeep();
+        int diceStartX = (900 - (5 * 110)) / 2;
 
         for (int i = 0; i < 5; i++) {
-            int x = 100 + (i * 125);
-            int y = 250;
+            int x = diceStartX + (i * 110);
+            int y = 230;
 
-            Color boxColor = keep[i] ? new Color(0, 60, 0) : new Color(30, 30, 30);
-            Color borderColor = keep[i] ? Color.GREEN : Color.CYAN;
-
-            g2.setColor(boxColor);
+            // Die Body
+            g2.setColor(keeps[i] ? new Color(0, 80, 80) : new Color(30, 30, 30));
             g2.fillRoundRect(x, y, 100, 100, 15, 15);
-            g2.setColor(borderColor);
-            g2.setStroke(new BasicStroke(3));
+
+            // Neon Border
+            g2.setColor(keeps[i] ? Color.CYAN : Color.GREEN);
+            g2.setStroke(new BasicStroke(keeps[i] ? 4 : 2));
             g2.drawRoundRect(x, y, 100, 100, 15, 15);
 
+            // Dice Value (Big and Bold)
             g2.setColor(Color.WHITE);
-            g2.setFont(new Font("Arial", Font.BOLD, 45));
-            g2.drawString(String.valueOf(dice[i]), x + 35, y + 65);
+            g2.setFont(new Font("Arial", Font.BOLD, 42));
+            String val = String.valueOf(dice[i]);
+            FontMetrics fm = g2.getFontMetrics();
+            g2.drawString(val, x + (100 - fm.stringWidth(val)) / 2, y + 65);
+
+            // Locked Indicator
+            if (keeps[i]) {
+                g2.setFont(new Font("Monospaced", Font.BOLD, 12));
+                g2.drawString("[LOCKED]", x + 22, y + 90);
+            }
+
+
         }
 
-        g2.setTransform(oldTransform); // Reset for UI text
+        g2.setTransform(old);
 
-        // UI Overlay
+        // --- TOP UI OVERLAY (Static) ---
         g2.setColor(Color.CYAN);
         g2.setFont(new Font("Monospaced", Font.BOLD, 22));
-        g2.drawString("> PATTERN_CHALLENGE.EXE", 50, 50);
+        g2.drawString("> PATTERN_CHALLENGE.SYS", 50, 50);
+
         g2.setColor(Color.WHITE);
-        g2.setFont(new Font("Monospaced", Font.PLAIN, 18));
-        g2.drawString("SESSION: " + engine.getSessionScore(), 50, 85);
+        g2.setFont(new Font("Monospaced", Font.PLAIN, 16));
+        g2.drawString("REROLLS: " + engine.getRerolls(), 50, 85);
+
+        // Status message from Engine
+        g2.setColor(Color.YELLOW);
+        g2.drawString(engine.getStatus(), 50, 115);
+
+        // Live pattern preview
+        ScoreResult currentMatch = engine.calculateScore(dice);
         g2.setColor(Color.GREEN);
-        g2.drawString("LOG: " + engine.getStatus(), 50, 115);
+        g2.drawString("CURRENT: " + currentMatch.name + " (+" + currentMatch.points + ")", 50, 145);
+        if (crossHair != null) {
+            crossHair.draw(g2);
+        }
     }
 }

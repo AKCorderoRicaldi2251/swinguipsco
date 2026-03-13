@@ -8,14 +8,15 @@ public class DiceGridGUI extends ShootMenu {
 
     public DiceGridGUI(SceneManager manager) {
         super(manager, List.of());
+        this.isHorizontal = true;
         this.engine = new DiceGridEngine(manager.getPlayer());
 
+        // Horizontal Buttons
         String[] keys = {"RESET", "EXIT"};
-        int startX = 350;
+        int startX = (900 - 220) / 2; // (2 buttons * 100) + 20 gap
         for (String key : keys) {
-            int width = 100;
-            targets.add(new Target(startX, 530, width, 40, key));
-            startX += width + 20;
+            targets.add(new Target(startX, 530, 100, 40, key));
+            startX += 100 + 20;
         }
     }
 
@@ -64,45 +65,52 @@ public class DiceGridGUI extends ShootMenu {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D g2 = (Graphics2D) g;
-
         var old = g2.getTransform();
         g2.translate(camX, camY);
 
-        // --- DRAW GRID ---
+        // --- DRAW 3x3 GRID (Centered) ---
+        int gridWidth = (3 * 100) + (2 * 10);
+        int startX = (900 - gridWidth) / 2;
+        int startY = 150;
+
         int[][] grid = engine.getGrid();
         for (int r = 0; r < 3; r++) {
             for (int c = 0; c < 3; c++) {
-                int x = 300 + (c * 110);
-                int y = 150 + (r * 110);
-
-                g2.setColor(new Color(40, 40, 40));
-                g2.fillRoundRect(x, y, 100, 100, 10, 10);
+                int x = startX + (c * 110);
+                int y = startY + (r * 110);
+                g2.setColor(new Color(30, 30, 30));
+                g2.fillRoundRect(x, y, 100, 100, 5, 5);
                 g2.setColor(Color.CYAN);
-                g2.drawRoundRect(x, y, 100, 100, 10, 10);
+                g2.drawRoundRect(x, y, 100, 100, 5, 5);
 
                 if (grid[r][c] != 0) {
                     g2.setColor(Color.WHITE);
-                    g2.setFont(new Font("Arial", Font.BOLD, 40));
-                    g2.drawString(String.valueOf(grid[r][c]), x + 35, y + 65);
+                    g2.setFont(new Font("Monospaced", Font.BOLD, 30));
+                    g2.drawString(String.valueOf(grid[r][c]), x + 40, y + 60);
                 }
             }
         }
         g2.setTransform(old);
 
-        // --- UI ---
-        g2.setColor(Color.CYAN);
-        g2.setFont(new Font("Monospaced", Font.BOLD, 22));
-        g2.drawString("> DICE_GRID_PUZZLE", 50, 50);
+        if (!gameOver) {
+            g2.setColor(Color.WHITE);
+            g2.setFont(new Font("Monospaced", Font.BOLD, 18));
+            g2.drawString("CURRENT DIE:", 50, 100);
 
-        g2.setColor(Color.WHITE);
-        g2.drawString("CURRENT ROLL: " + engine.getCurrentRoll(), 50, 100);
-
-        if (gameOver) {
-            g2.setColor(Color.GREEN);
-            g2.drawString("FINAL SCORE: " + finalScore, 50, 150);
-        } else {
+            // Draw a special box for the "Next" die
             g2.setColor(Color.YELLOW);
-            g2.drawString("STATUS: " + engine.getStatus(), 50, 150);
+            g2.drawRoundRect(50, 110, 60, 60, 10, 10);
+            g2.setFont(new Font("Arial", Font.BOLD, 30));
+            // Assuming your engine has a getNextDie() method
+            g2.drawString(String.valueOf(engine.getCurrentRoll()), 68, 152);
+        } else {
+            g2.setColor(Color.CYAN);
+            g2.setFont(new Font("Monospaced", Font.BOLD, 24));
+            g2.drawString("GRID FULL! FINAL SCORE: " + finalScore, 50, 100);
+        }
+
+        if (crossHair != null) {
+            crossHair.draw(g2);
         }
     }
 }
