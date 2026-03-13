@@ -61,7 +61,7 @@ public class SystemCrashGUI extends ShootMenu {
     }
 
     private void openBidDialog() {
-        int face;
+        int face ;
         int qty ;
 
         // 1. GET FACE VALUE (Loop until valid)
@@ -341,48 +341,5 @@ public class SystemCrashGUI extends ShootMenu {
         }
     }
 
-    // ==========================================
-    // MAIN METHOD FOR PLAY-TESTING
-    // ==========================================
 
-public static void main(String[] args) {
-    SwingUtilities.invokeLater(() -> {
-        JFrame frame = new JFrame("System Crash Terminal");
-
-        // 1. Setup SceneManager and Player
-        SceneManager sm = new SceneManager();
-        Player p = new Player("Cyber_Runner");
-        sm.setPlayer(p);
-
-
-        // 2. Initialize GUI
-        SystemCrashGUI game = new SystemCrashGUI(sm);
-
-        sm.setInitialScene(game);
-
-        // 3. Setup Listeners for ShootMenu interactions
-        game.addMouseMotionListener(new java.awt.event.MouseAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent e) {
-                game.crossHair.updatePosition(e.getX(), e.getY());
-            }
-        });
-
-        game.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mousePressed(java.awt.event.MouseEvent e) {
-                // This creates the bullet that ShootMenu checks for hits
-                game.bullets.add(game.new Bullet(e.getX(), e.getY()));
-            }
-        });
-
-        // 4. Start Game Loop Timer (Approx 60 FPS)
-
-
-        frame.add(sm);
-        frame.setSize(900, 600);
-        frame.setResizable(false);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setLocationRelativeTo(null);
-        frame.setVisible(true);
-    });
-}
 }
