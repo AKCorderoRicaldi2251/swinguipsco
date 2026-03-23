@@ -159,16 +159,20 @@ public class SystemCrashDice {
         if (userNumDiceRemaining <= 0 || compNumDiceRemaining <= 0) {
 
             if (compNumDiceRemaining <= 0) {
-                // Computer has no dice left = User Wins
                 lastResultMessage = "SYSTEM RECOVERED: YOU WIN!";
                 currentPlayer.incrementScore("SystemCrash_Wins");
+
+                // NEW: record a win — score = 1 (win), tracks games played, high score, timestamp
+                currentPlayer.recordGamePlayed("SystemCrash", 1);
+
             } else if (userNumDiceRemaining <= 0) {
-                // User has no dice left = User Loses
                 lastResultMessage = "CRITICAL FAILURE: YOU LOSE.";
                 currentPlayer.incrementScore("SystemCrash_Losses");
+
+                // NEW: record a loss — score = 0 (loss)
+                currentPlayer.recordGamePlayed("SystemCrash", 0);
             }
 
-            // Save the progress immediately
             GameDataManager.savePlayer(currentPlayer);
         }
     }

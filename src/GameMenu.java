@@ -33,31 +33,51 @@ public class GameMenu extends ShootMenu {
     }
 
     private void showScoreboard() {
-        // Retrieve all player files from the /saves/ folder
         List<Player> allPlayers = GameDataManager.getAllPlayersForScoreboard();
 
         StringBuilder sb = new StringBuilder();
-        sb.append("--- [ GLOBAL_SYSTEM_RANKINGS ] ---\n\n");
+        sb.append("=== [ GLOBAL_SYSTEM_RANKINGS ] ===\n\n");
 
-        // Updated Header: Hacker ID | System Crash (W/L) | Game 1 High | Game 2 High | Game 3 Best
-        sb.append(String.format("%-15s | %-12s | %-8s | %-8s | %-8s\n",
-                "HACKER_ID", "CRASH (W/L)", "G1_PAT", "G2_GRID", "G3_CODE"));
-        sb.append("--------------------------------------------------------------------------\n");
+        // ── Summary table (one row per player) ──────────────────────────────
+        sb.append(String.format("%-15s | %-8s | %-10s | %-10s | %-10s | %-10s\n",
+                "HACKER_ID", "GAMES", "G1_HIGH", "G2_HIGH", "G3_HIGH", "SC W/L"));
+        sb.append("-".repeat(80)).append("\n");
 
         if (allPlayers.isEmpty()) {
-            sb.append(">> NO DATA DETECTED IN ROOT/SAVES/");
+            sb.append(">> NO DATA DETECTED IN ROOT/SAVES/\n");
         } else {
-            // Sort players by total wins or high score if you like
             for (Player p : allPlayers) {
-                // Format System Crash as "Wins/Losses" (e.g., 10/2)
-                String crashStats = p.getScore("SystemCrash_Wins") + "/" + p.getScore("SystemCrash_Losses");
-
-                sb.append(String.format("%-15s | %-12s | %-8d | %-8d | %-8d\n",
+                String crash = p.getScore("SystemCrash_Wins") + "/" + p.getScore("SystemCrash_Losses");
+                sb.append(String.format("%-15s | %-8d | %-10d | %-10d | %-10d | %-10s\n",
                         p.getName(),
-                        crashStats,
-                        p.getScore("Game1_Total"),      // Patterns Challenge
-                        p.getScore("DiceGrid_HighScore"), // Dice Grid
-                        p.getScore("Codebreaker_MinAttempts") // Codebreaker (Attempts)
+                        p.getTotalGamesPlayed(),
+                        p.getScore("PatternChallenge_HighScore"),
+                        p.getScore("DiceGrid_HighScore"),
+                        p.getScore("Codebreaker_HighScore"),
+                        crash
+                ));
+            }
+        }
+
+        // ── Per-game detail block for each player ───────────────────────────
+        sb.append("\n\n=== [ PER_PLAYER_DETAIL ] ===\n");
+
+        String[] gameKeys   = { "PatternChallenge", "DiceGrid", "Codebreaker", "SystemCrash" };
+        String[] gameLabels = { "G1 Pattern Challenge", "G2 Dice Grid", "G3 Codebreaker", "G4 System Crash" };
+
+        for (Player p : allPlayers) {
+            sb.append("\n>> ").append(p.getName())
+                    .append("  (total sessions: ").append(p.getTotalGamesPlayed()).append(")\n");
+
+            for (int i = 0; i < gameKeys.length; i++) {
+                String key = gameKeys[i];
+                sb.append(String.format(
+                        "   %-22s | played: %-4d | high: %-6d | recent: %-6d | last: %s\n",
+                        gameLabels[i],
+                        p.getGamesPlayed(key),
+                        p.getScore(key + "_HighScore"),
+                        p.getRecentScore(key),
+                        p.getLastPlayed(key)
                 ));
             }
         }

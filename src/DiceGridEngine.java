@@ -49,6 +49,7 @@ public class DiceGridEngine {
 
         // Save to Player Data
         player.setScore("DiceGrid_HighScore", Math.max(player.getScore("DiceGrid_HighScore"), total));
+        player.recordGamePlayed("DiceGrid", total);
         GameDataManager.savePlayer(player);
         return total;
     }

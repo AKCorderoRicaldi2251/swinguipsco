@@ -77,6 +77,7 @@ public class CodebreakerEngine {
     private void saveScore() {
         int points = (maxAttempts - attempts + 1) * 25;
         player.setScore("Codebreaker_TotalPoints", player.getScore("Codebreaker_TotalPoints") + points);
+        player.recordGamePlayed("Codebreaker", points);
         GameDataManager.savePlayer(player);
     }
 

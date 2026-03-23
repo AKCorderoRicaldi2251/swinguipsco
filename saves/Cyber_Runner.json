@@ -1,4 +1,7 @@
 {
-    "scores": {"SystemCrash_Losses": 1},
+    "scores": {
+        "DiceGrid_HighScore": 53,
+        "SystemCrash_Losses": 1
+    },
     "name": "Cyber_Runner"
 }

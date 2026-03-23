@@ -50,6 +50,9 @@ public class PatternChallengeDice {
         int currentTotal = player.getScore("Game1_Total");
         player.setScore("Game1_Total", currentTotal + result.points);
 
+        player.recordGamePlayed("PatternChallenge", result.points);
+
+
         // Save to JSON via your Manager
         GameDataManager.savePlayer(player);
 
