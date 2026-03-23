@@ -46,7 +46,11 @@ Your progress is managed by the `GameDataManager`, which handles the technical s
 * **Feedback**: Green borders indicate a correct value in the correct spot; yellow borders indicate the value exists but is in the wrong spot.
 
 ### **Game 4: System Crash (Liar's Dice)**
-* **Mechanics**: A tactical bluffing encounter where you bid on dice values.
-* **Wildcards**: In this version, all **6s** act as "patches" to all **1s** which are wilds and count toward any bid currently on the table. 
+**Game Type**: Tactical Liar's Dice Variant.
+* **Objective**: Bid on the quantity of specific dice faces.
+* **Bugs (1s)**: Function as unstable wildcards that increase the count of any bid.
+* **Patches (6s)**: Counter-measures that neutralize Bugs. One Patch deletes one Bug from the total wildcard pool.
+* **Calculation**: Total Count = (Dice matching Bid Value) + Max(0, Bugs - Patches).
+* **Persistence**: Results are logged to your JSON profile as a Win/Loss ratio.. 
 
 ---
