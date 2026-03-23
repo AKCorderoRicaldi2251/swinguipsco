@@ -129,7 +129,7 @@ public abstract class ShootMenu extends JPanel {
         }
         g2.setColor(Color.YELLOW);
         for (Bullet b : bullets) {
-            g2.fillOval(b.x - 3, b.y - 5, 6, 10);
+            g2.fillOval(b.x - 3, b.y - 5, 6, 6);
         }
 
         g2.setTransform(old); // END SWAY
