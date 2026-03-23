@@ -1,7 +1,21 @@
 {
     "scores": {
+        "Game1_Total": 20,
         "DiceGrid_HighScore": 53,
+        "PatternChallenge_HighScore": 20,
         "SystemCrash_Losses": 1
     },
-    "name": "Cyber_Runner"
+    "gamesPlayed": {
+        "PatternChallenge": 1,
+        "DiceGrid": 1
+    },
+    "recentScores": {
+        "PatternChallenge": 20,
+        "DiceGrid": 49
+    },
+    "name": "Cyber_Runner",
+    "lastPlayed": {
+        "PatternChallenge": "2026-03-23 19:52:25",
+        "DiceGrid": "2026-03-23 19:52:35"
+    }
 }

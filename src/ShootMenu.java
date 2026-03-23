@@ -127,6 +127,10 @@ public abstract class ShootMenu extends JPanel {
             g2.setColor(Color.WHITE);
             g2.drawString(t.label, tx, ty);
         }
+        g2.setColor(Color.YELLOW);
+        for (Bullet b : bullets) {
+            g2.fillOval(b.x - 3, b.y - 5, 6, 10);
+        }
 
         g2.setTransform(old); // END SWAY
         crossHair.draw(g2);   // Crosshair stays static
