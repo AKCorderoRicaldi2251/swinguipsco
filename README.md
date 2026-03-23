@@ -32,7 +32,7 @@ The application offers four distinct mini-games accessible through a centralized
 
 ---
 
-## 🛠️ Core System Architecture
+## Core System Architecture
 
 ### **1. Scene Management (`SceneManager.java`)**
 The `SceneManager` acts as the central controller for the application.
