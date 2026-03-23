@@ -1,5 +1,5 @@
 # Dice Shooter
-##This project is a collaborative Java application developed for the **Professional and Study Competencies for Computing (PSCO)** module. It features a collection of four dice-based games with a SwingUI developed.
+## This project is a collaborative Java application developed for the **Professional and Study Competencies for Computing (PSCO)** module. It features a collection of four dice-based games with a SwingUI developed.
 ---
 
 ##  The Games
