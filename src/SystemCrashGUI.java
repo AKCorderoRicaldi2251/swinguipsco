@@ -166,7 +166,7 @@ public class SystemCrashGUI extends ShootMenu {
         } else if (currentState == State.WIN_CUTSCENE) {
             renderWinScene(g2);
         } else {
-            // We manually draw the ShootMenu targets because we aren't calling super.paintComponent
+
             for (Target t : targets) {
                 g2.setColor(t.hovered ? Color.ORANGE : Color.WHITE);
                 g2.drawRect(t.hitbox.x, t.hitbox.y, t.hitbox.width, t.hitbox.height);
@@ -180,7 +180,7 @@ public class SystemCrashGUI extends ShootMenu {
         // Draw Bullets (still in world-space / sway+shake transform)
         g2.setColor(Color.YELLOW);
         for (Bullet b : bullets) {
-            g2.fillOval(b.x - 3, b.y - 5, 6, 10);
+            g2.fillOval(b.x - 3, b.y - 5, 6, 6);
         }
 
         // 5. RESET TO SCREEN SPACE (For the Crosshair)
