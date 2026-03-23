@@ -47,6 +47,6 @@ Your progress is managed by the `GameDataManager`, which handles the technical s
 
 ### **Game 4: System Crash (Liar's Dice)**
 * **Mechanics**: A tactical bluffing encounter where you bid on dice values.
-* **Wildcards**: In this version, all **6s** act as "Wilds" and count toward any bid currently on the table.
+* **Wildcards**: In this version, all **6s** act as "patches" to all **1s** which are wilds and count toward any bid currently on the table. 
 
 ---
