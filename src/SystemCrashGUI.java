@@ -145,9 +145,7 @@ public class SystemCrashGUI extends ShootMenu {
 
     @Override
     protected void paintComponent(Graphics g) {
-        // 1. Clear the panel (Don't call super.paintComponent(g) twice)
-        g.setColor(Color.BLACK);
-        g.fillRect(0, 0, getWidth(), getHeight());
+
 
         Graphics2D g2 = (Graphics2D) g;
         var screenSpaceTransform = g2.getTransform(); // Save the "Perfect" screen position
@@ -178,6 +176,11 @@ public class SystemCrashGUI extends ShootMenu {
             drawPlayerDice(g2);
             drawCurrentBid(g2);
             drawGameInfo(g2);
+        }
+        // Draw Bullets (still in world-space / sway+shake transform)
+        g2.setColor(Color.YELLOW);
+        for (Bullet b : bullets) {
+            g2.fillOval(b.x - 3, b.y - 5, 6, 10);
         }
 
         // 5. RESET TO SCREEN SPACE (For the Crosshair)
