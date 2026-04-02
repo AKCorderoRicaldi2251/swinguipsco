@@ -3,7 +3,7 @@
 ---
 
 ##  The Games
-The application offers four distinct mini-games accessible through a centralized menu interface.
+The application offers four distinct mini-games accessible through a centralized menu interface. As well as a user guide in md file format in the repo
 
 ### 1. Dice Patterns Challenge
 * **Goal**: Match specific dice patterns (similar to poker hands) to score points.
